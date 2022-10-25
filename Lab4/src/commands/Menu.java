@@ -1,5 +1,7 @@
 package commands;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Menu {
@@ -7,45 +9,20 @@ public class Menu {
         System.out.println("Select the action:\nSelect equipment for knight - 1" +
         "            \nAdd new equipment - 2\nDelete equipment - 3\nUpdate equipment - 4\nLog out - 5\nBuild report - 6\nEnd process - 0");
     }
+
     public void Menu() throws Exception {
+        Map<Integer,Interface> commands = new HashMap<>();
+        commands.put(1,new Info());
+        commands.put(2,new Registration());
+        commands.put(3,new LogIn());
         System.out.println("Welcome to menu.\nEnter what do you want to do?\nInfo - 1\nRegistration - 2\nLog in - 3\nExit - 0");
         Scanner scan = new Scanner(System.in);
         int numOfCommand = scan.nextInt();
         while(numOfCommand != 0)
         {
-            Interface command;
-            ResultOfCommand result;
-            switch (numOfCommand)
-            {
-                case 1:
-                {
-                    command = new Info();
-                    result = command.execute();
-                    System.out.println(result.Result());
-                    break;
-                }
-                case 2:
-                {
-                    command = new Registration();
-                    result = command.execute();
-                    System.out.println(result.Result());
-                    printequip();
-                    if(result.isSuccessful()){ menuOfEquipment(); }
-                    break;
-                }
-                case 3:
-                {
-                    command = new Log_in();
-                    result = command.execute();
-                    System.out.println(result.Result());
-                    printequip();
-                    if(result.isSuccessful())
-                    {
-                        menuOfEquipment();
-                    }
-                    break;
-                }
-                default:break;
+            commands.get(numOfCommand).execute();
+            if(numOfCommand!=1 && commands.get(numOfCommand).execute().isSuccessful()){
+                menuOfEquipment();
             }
             System.out.println("Welcome to menu.\nEnter what do you want to do?\nInfo - 1\nRegistration - 2\nLog in - 3\nExit - 0");
             numOfCommand = scan.nextInt();
@@ -54,52 +31,19 @@ public class Menu {
 
     public void menuOfEquipment() throws Exception
     {
+        printequip();
+        Map<Integer,Interface> equipment=new HashMap<>();
+        equipment.put(1,new SelectEquipment());
+        equipment.put(2, new AddEquipment());
+        equipment.put(3,new DeleteEquipment());
+        equipment.put(4,new UpdateEquipment());
+        equipment.put(5,new LogOut());
+        equipment.put(6,new BuildReport());
+        equipment.put(7,new CalculateData());
         Scanner scan = new Scanner(System.in);
         int numberOfAction = scan.nextInt();
-        while(numberOfAction != 0)
-        {
-            Interface action;
-            ResultOfCommand res;
-            switch (numberOfAction)
-            {
-                case 1:
-                    action  = new SelectEquipment();
-                    res = action.execute();
-                    System.out.println(res.Result());
-                    if(res.isSuccessful())
-                    {
-                        Interface res2 = new CalculateData();
-                        ResultOfCommand reslt = res2.execute();
-                        System.out.println(reslt.Result());
-                    }
-                    break;
-                case 2:
-                    action = new AddEquipment();
-                    res = action.execute();
-                    System.out.println(res.Result());
-                    break;
-                case 3:
-                    action = new DeleteEquipment();
-                    res = action.execute();
-                    System.out.println(res.Result());
-                    break;
-                case 4:
-                    action = new UpdateEquipment();
-                    res = action.execute();
-                    System.out.println(res.Result());
-                    break;
-                case 5:
-                    action = new Log_out();
-                    res = action.execute();
-                    System.out.println(res.Result());
-                    break;
-                case 6:
-                    action = new BuildReport();
-                    res = action.execute();
-                    System.out.println(res.Result());
-                    break;
-                default:break;
-            }
+        while(numberOfAction != 0){
+            equipment.get(numberOfAction).execute();
             printequip();
             numberOfAction = scan.nextInt();
         }
